@@ -62,6 +62,12 @@ rewards - a 5x row means a 100-point quest reward lands as 500. That holds where
 value for the skill: conflicting row values, or a skill whose globals-backed rows suppress the grant
 (Crafting, Hideout Management), leave the server-paid amount unchanged.
 
+Crafting is paid by the server from the hideout config when a finished craft is collected, so its two rows
+scale exactly those numbers, live: **XP per alternating craft** (`craftingExpAmount`, paid when the recipe
+differs from the station's last one) and **XP per hour of craft time** (paid on every collected craft, repeats
+included). The game client's own crafting rows are not listed, because the client never pays that XP. Hideout
+Management's client rows are hidden for the same reason; its server rows stay.
+
 The hideout gym is paid the same way, but not for an action: it draws strength or endurance at random for each
 successful repetition. It therefore gets a row under each skill it can pay - `Strength[Workout]` and
 `Endurance[Workout]` - and the in-game popup for a repetition reports what you actually earned
@@ -144,9 +150,9 @@ migrates on its own, and a fresh install never sees the question:
   become 0.
 - `HideoutExpMultiplier` from the server's `config.json` becomes the two HideoutManagement values the old
   mod scaled.
-- `CraftingExpMultiplier` **has no equivalent and is not carried.** It scaled `craftingExpAmount` in
-  the hideout config - XP for alternating crafts in a hideout module - which is a different
-  number from the crafting cycle rates this mod exposes. The server log says so when it finds the old value.
+- `CraftingExpMultiplier` **is not carried automatically.** It scaled `craftingExpAmount` in the hideout
+  config - XP for alternating crafts in a hideout module. Set the same number on the Crafting row
+  **XP per alternating craft**. The server log says so when it finds the old value.
 - `Increase Limits` is no longer a setting: its only job was raising the cap, which is now 1000 for everyone.
 
 Answering "Don't migrate" drops the question for good: the old server fields are removed unapplied, and

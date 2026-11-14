@@ -563,6 +563,13 @@ public sealed class SkillMultiplierRouterCallback(
         HashSet<string> scaledByServer,
         HashSet<string> serverOwned)
     {
+        // The client never applies a multiplier to these skills (ClientAuthorizedSkill), so a client row for
+        // one is a slider that does nothing. Their server rows are the only ones listed.
+        if (serverOwned.Contains(group.Skill))
+        {
+            return;
+        }
+
         var mine = reported
             .Values.Where(a => a.Skill.Equals(group.Skill, StringComparison.OrdinalIgnoreCase))
             .OrderBy(a => a.Index)

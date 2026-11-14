@@ -42,8 +42,8 @@ internal sealed class SkillRuleEngine(
     };
 
     /// <summary>
-    /// Skills whose server-paid XP is computed from globals fields this mod scales in place: crafting
-    /// payouts derive from the <c>Crafting.Points*</c> rows, hideout payouts from the
+    /// Skills whose server-paid XP is computed from numbers this mod scales in place: crafting
+    /// payouts derive from the hideout config rows (<c>craftingExpAmount</c>, <c>hoursForSkillCrafting</c>), hideout payouts from the
     /// <c>HideoutManagement.SkillPoints*</c> rows. For these, a scaled row means the grant already
     /// carries the multiplier - multiplying the grant as well would square it.
     /// <para>
@@ -161,6 +161,15 @@ internal sealed class SkillRuleEngine(
     public double? ServerGrantMultiplier(SkillTypes skill, ConfigStore store)
     {
         var skillId = ClientSkillId(skill);
+
+        // Crafting and hideout payouts are computed from numbers this mod already scales in place (the
+        // hideout config and the globals), so their grants carry the multiplier. Multiplying the grant too
+        // would square it, and their client-keyed rows (never applied by the client) must not leak in here.
+        if (GrantsDerivedFromScaledGlobals.Contains(skillId))
+        {
+            return null;
+        }
+
         var values = new HashSet<double>();
 
         lock (_gate)

@@ -157,11 +157,6 @@ internal static class ClientActionNames
         Add("Sniping[0]", "Long-range headshots",
             "XP for a headshot from 70 m or further, taken while holding your breath.");
 
-        Add("Crafting[0]", "Craft time",
-            "XP per second of craft time - longer recipes pay more.");
-        Add("Crafting[1]", "First completion of a craft",
-            "XP the first time you complete a given recipe.");
-
         Add("HideoutManagement[0]", "Completing a hideout craft",
             "XP for finishing a craft in the hideout.");
         Add("HideoutManagement[1]", "Upgrading a hideout zone",

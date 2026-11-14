@@ -78,9 +78,8 @@ internal sealed class LegacyMigrator(
             // would multiply the wrong crafting XP while looking like it had worked.
             _logger.Warning(
                 $"[SkillMultiplier] Your old config set CraftingExpMultiplier = {craftingValue}. That scaled "
-                + "crafting XP per alternating craft in a hideout module, which this version has no multiplier "
-                + "for. For the same effect set craftingExpAmount in SPT_Data\\configs\\hideout.json directly; "
-                + "the Crafting multipliers on the page scale the separate hours-of-crafting rate."
+                + "crafting XP per alternating craft in a hideout module. Set the same number on the Crafting "
+                + "row \"XP per alternating craft\" on the page."
             );
         }
 

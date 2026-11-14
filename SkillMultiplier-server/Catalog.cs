@@ -129,7 +129,7 @@ public static class Catalog
         ["Surgery"] = "Performing surgery, plus a share of the XP FieldMedicine and FirstAid earn.",
         ["CovertMovement"] = "Moving while your noise level is low.",
         ["WeaponTreatment"] = "Repairing weapons.",
-        ["Crafting"] = "Hideout crafting cycles.",
+        ["Crafting"] = "Collecting finished hideout crafts: a bonus for alternating recipes, plus XP for time spent crafting.",
         ["HideoutManagement"] = "Hideout crafts, zone upgrades, and resource consumption.",
         ["Pistol"] = "Handling pistols - also used by launchers, attached launchers and melee.",
         ["Revolver"] = "Handling revolvers.",
@@ -307,17 +307,21 @@ public static class Catalog
             appliedAtServerGrant: true);
 
         // --- Crafting ---
-        // The client derives PointsPerSecond and PointsPerOriginalCraft from these four, so these are the
-        // real inputs; tuning the derived values is not possible and not needed.
-        Add("Crafting", "PointsPerCraftingCycle", s => s.Crafting.PointsPerCraftingCycle, (s, v) => s.Crafting.PointsPerCraftingCycle = v,
-            "XP per completed crafting cycle.");
-        Add("Crafting", "CraftingCycleHours", s => s.Crafting.CraftingCycleHours, (s, v) => s.Crafting.CraftingCycleHours = v,
-            "Hours per crafting cycle, used for one thing: turning the per-cycle payment into a per-second "
-                + "rate. Lower means more XP per second, and it does not change how long a craft takes.");
-        Add("Crafting", "PointsPerUniqueCraftCycle", s => s.Crafting.PointsPerUniqueCraftCycle, (s, v) => s.Crafting.PointsPerUniqueCraftCycle = v,
-            "XP the first time you complete a given recipe.");
-        Add("Crafting", "UniqueCraftsPerCycle", s => s.Crafting.UniqueCraftsPerCycle, (s, v) => s.Crafting.UniqueCraftsPerCycle = v,
-            "How many first-time crafts count towards a cycle.");
+        // On SPT 4.1.x the client cannot progress Crafting (it is a ClientAuthorizedSkill), so the globals
+        // fields the client derives its per-second and first-craft XP from are never read. The server pays
+        // crafting XP itself, from the hideout config, when a finished craft is collected: a flat bonus when
+        // the recipe differs from the station's last one, plus one point per fixed span of recipe time.
+        // These two rows scale exactly those two numbers, so they are the only crafting rows there are.
+        Add("Crafting", "CraftingExpAmount", _ => HideoutXpTarget.AlternatingBonus,
+            (_, v) => HideoutXpTarget.AlternatingBonus = v,
+            "XP for collecting a craft whose recipe differs from the last one collected in the same hideout "
+                + "station. Repeating the same recipe pays nothing from this row.",
+            label: "XP per alternating craft");
+        Add("Crafting", "CraftingXpPerHour", _ => HideoutXpTarget.XpPerHourOfCrafting,
+            (_, v) => HideoutXpTarget.XpPerHourOfCrafting = v,
+            "XP per hour of recipe time, paid on every collected craft including repeats. The server pays it "
+                + "in whole points, so short crafts carry the remainder over to the next one.",
+            label: "XP per hour of craft time");
 
         // --- HideoutManagement ---
         Add("HideoutManagement", "SkillPointsPerCraft", s => s.HideoutManagement.SkillPointsPerCraft, (s, v) => s.HideoutManagement.SkillPointsPerCraft = v,

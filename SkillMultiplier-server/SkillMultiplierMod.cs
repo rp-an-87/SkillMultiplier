@@ -4,6 +4,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services.Locales;
 
@@ -60,8 +61,11 @@ public sealed class SkillMultiplierMod : IOnLoad
         ISptLogger<SkillMultiplierMod> logger,
         ModHelper modHelper,
         GlobalTable globalTable,
-        LocaleService localeService)
+        LocaleService localeService,
+        HideoutConfig hideoutConfig)
     {
+        // Before CaptureBase: the Crafting rows read their base values from this config.
+        HideoutXpTarget.Config = hideoutConfig;
         _logger = logger;
         _modHelper = modHelper;
         _globalTable = globalTable;
